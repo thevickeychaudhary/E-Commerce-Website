@@ -2,8 +2,13 @@ package com.product.service.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.product.service.dto.ProductRequestDto;
+import com.product.service.dto.ProductResponseDto;
 import com.product.service.entity.Product;
 import com.product.service.exception.ProductNotFoundException;
 import com.product.service.repository.ProductRepository;
@@ -17,23 +22,100 @@ public class ProductService {
 		this.productRepo = productRepo;
 	}
 
-	public Product addProduct(Product prod) {
-		return productRepo.save(prod);
+	private Product convertToEntity(ProductRequestDto dto) {
+
+		// DTO = Entity
+		Product product = new Product();
+
+		product.setName(dto.getName());
+		product.setDescription(dto.getDescription());
+		product.setPrice(dto.getPrice());
+		product.setQuantity(dto.getQuantity());
+
+		return product;
+
 	}
 
-	public List<Product> getAllProducts() {
-		return productRepo.findAll();
+	private ProductResponseDto convertToResponse(Product product) {
+
+		// entity to= responsedto
+
+		ProductResponseDto response = new ProductResponseDto();
+
+		response.setId(product.getId());
+		response.setName(product.getName());
+		response.setDescription(product.getDescription());
+		response.setPrice(product.getPrice());
+		response.setQuantity(product.getQuantity());
+
+		return response;
+
 	}
 
-	public Product getProductById(Long id) {
-		return productRepo.findById(id).orElseThrow( () -> new ProductNotFoundException("Product not found with id "+id));
+	public ProductResponseDto addProduct(ProductRequestDto dto) {
+
+		// DTO = Entity
+		Product product = convertToEntity(dto);
+
+		Product savedProduct = productRepo.save(product);
+
+		return convertToResponse(savedProduct);
+	}
+
+	public Page<ProductResponseDto> getAllProducts(int page, int size, String sortField, String sortDir) {
+
+//		PageRequest pageable = PageRequest.of(page, size);
+//
+//		Page<Product> productPage = productRepo.findAll(pageable);
+//
+//		List<ProductResponseDto> responseList = new ArrayList<>();
+//
+//		for (Product product : productPage) {
+//
+////			ProductResponseDto dto = new ProductResponseDto();
+////
+////			dto.setId(product.getId());
+////			dto.setName(product.getName());
+////			dto.setDescription(product.getDescription());
+////			dto.setPrice(product.getPrice());
+////			dto.setQuantity(product.getQuantity());
+//
+//			responseList.add(convertToResponse(product));
+//		}
+//
+//		return responseList;
+
+		Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(sortField).ascending() : Sort.by(sortField).descending();
+
+		PageRequest pageable = PageRequest.of(page, size,sort);
+
+		Page<Product> productPage = productRepo.findAll(pageable);
+
+		return productPage.map(this::convertToResponse);
+
+	}
+	
+	
+	public List<ProductResponseDto> searchProducts(String keyword)
+	{
+		
+		List<Product> products =productRepo.findByNameContainingIgnoreCase(keyword);
+		
+		return products.stream().map(this::convertToResponse).toList();
+	}
+	public ProductResponseDto getProductById(Long id) {
+
+		Product product = productRepo.findById(id)
+				.orElseThrow(() -> new ProductNotFoundException("Product not found with id " + id));
+
+		return convertToResponse(product);
 	}
 
 	public void deleteProduct(Long id) {
 		productRepo.deleteById(id);
 	}
 
-	public Product updateProduct(Long id, Product prod) {
+	public ProductResponseDto updateProduct(Long id, ProductRequestDto prod) {
 		Product updateProd = productRepo.findById(id)
 				.orElseThrow(() -> new ProductNotFoundException("Product not found with id : " + id));
 
@@ -41,7 +123,8 @@ public class ProductService {
 		updateProd.setDescription(prod.getDescription());
 		updateProd.setPrice(prod.getPrice());
 		updateProd.setQuantity(prod.getQuantity());
-		return productRepo.save(updateProd);
+
+		return convertToResponse(productRepo.save(updateProd));
 	}
 
 }
