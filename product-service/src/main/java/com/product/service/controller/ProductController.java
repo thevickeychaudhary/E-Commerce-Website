@@ -29,12 +29,23 @@ public class ProductController {
 		this.prodService = prodService;
 	}
 
-	
-	@GetMapping("/search") 
-	public List<ProductResponseDto> searchProducts(@RequestParam String keyword)
-	{
+	@GetMapping("/search")
+	public List<ProductResponseDto> searchProducts(@RequestParam String keyword) {
 		return prodService.searchProducts(keyword);
 	}
+
+	@GetMapping("/filter/price")
+	public List<ProductResponseDto> filterByPrice(@RequestParam Double minPrice, @RequestParam Double maxPrice) {
+		return prodService.filterProductsByPrice(minPrice, maxPrice);
+	}
+   
+	// for custom query
+	@GetMapping("/price")
+    public List<ProductResponseDto>	 getProductByPrice(@RequestParam Double price)
+    {
+		   System.out.println(">>>>>>>> Inside getProductByPrice");
+		return prodService.getProductByPrice(price);
+    }
 	
 	
 	@PostMapping("/add")
@@ -44,14 +55,13 @@ public class ProductController {
 
 	@GetMapping
 	public Page<ProductResponseDto> getAllProducts(@RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "10") int size,
-			@RequestParam(defaultValue = "id") String sortField,
+			@RequestParam(defaultValue = "0") int size, @RequestParam(defaultValue = "id") String sortField,
 			@RequestParam(defaultValue = "asc") String sortDir
-			
-			
-			
-			) {
-		return prodService.getAllProducts(page, size, sortField,sortDir);
+
+	) {
+		System.out.println(">>>>>>>> Inside getAllProducts");
+
+		return prodService.getAllProducts(page, size, sortField, sortDir);
 	}
 
 	@GetMapping("/{id}")

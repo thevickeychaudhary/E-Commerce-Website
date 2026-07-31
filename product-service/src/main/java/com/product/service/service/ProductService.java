@@ -87,22 +87,35 @@ public class ProductService {
 
 		Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(sortField).ascending() : Sort.by(sortField).descending();
 
-		PageRequest pageable = PageRequest.of(page, size,sort);
+		PageRequest pageable = PageRequest.of(page, size, sort);
 
 		Page<Product> productPage = productRepo.findAll(pageable);
 
 		return productPage.map(this::convertToResponse);
 
 	}
-	
-	
-	public List<ProductResponseDto> searchProducts(String keyword)
-	{
-		
-		List<Product> products =productRepo.findByNameContainingIgnoreCase(keyword);
-		
+
+	public List<ProductResponseDto> searchProducts(String keyword) {
+
+		List<Product> products = productRepo.findByNameContainingIgnoreCase(keyword);
+
 		return products.stream().map(this::convertToResponse).toList();
 	}
+
+	public List<ProductResponseDto> filterProductsByPrice(Double minPrice, Double maxPrice) {
+
+		List<Product> products = productRepo.findByPriceBetween(minPrice, maxPrice);
+
+		return products.stream().map(this::convertToResponse).toList();
+	}
+
+	// for custom Query 
+	public List<ProductResponseDto> getProductByPrice(Double price) {
+		List<Product> products = productRepo.findProductsByPriceGreaterThan(price);
+
+		return products.stream().map(this::convertToResponse).toList();
+	}
+
 	public ProductResponseDto getProductById(Long id) {
 
 		Product product = productRepo.findById(id)
