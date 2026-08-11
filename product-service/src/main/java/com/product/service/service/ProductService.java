@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.product.service.dto.ProductRequestDto;
 import com.product.service.dto.ProductResponseDto;
+import com.product.service.dto.ProductSummaryDto;
 import com.product.service.entity.Product;
 import com.product.service.exception.ProductNotFoundException;
 import com.product.service.repository.ProductRepository;
@@ -109,7 +110,7 @@ public class ProductService {
 		return products.stream().map(this::convertToResponse).toList();
 	}
 
-	// for custom Query 
+	// for custom Query
 	public List<ProductResponseDto> getProductByPrice(Double price) {
 		List<Product> products = productRepo.findProductsByPriceGreaterThan(price);
 
@@ -140,4 +141,34 @@ public class ProductService {
 		return convertToResponse(productRepo.save(updateProd));
 	}
 
+	// DTO PROJECTION
+	public List<ProductSummaryDto> getProductSummary() {
+		return productRepo.findProductSummary();
+	}
+
+	// JPQL ADVANCE- Count Products
+	// COUNT
+	public Long countProducts() {
+		return productRepo.countProducts();
+	}
+
+	// SUM
+	public Double sumOfProductPrice() {
+		return productRepo.getTotalSumProductPrice();
+	}
+
+	// AVG
+	public Double getAvgProductPrice() {
+		return productRepo.getAverageProductPrice();
+	}
+
+	// MIN
+	public Double getMinProductPrice() {
+		return productRepo.getMinimumProductPrice();
+	}
+
+	// MAX
+	public Double getMaxProductPrice() {
+		return productRepo.getMaximumProductPrice();
+	}
 }
