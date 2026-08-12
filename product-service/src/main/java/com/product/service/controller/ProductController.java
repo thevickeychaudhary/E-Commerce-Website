@@ -144,4 +144,11 @@ public class ProductController {
     public List<ProductResponseDto> getAllProductsWithCategory() {
         return prodService.getAllProductsWithCategory();
     }
+
+    //JOIN FETCH
+    @GetMapping("/join-fetch")
+    public List<ProductResponseDto> getAllProductsWithCategoryFetch() {
+
+        return prodService.getAllProductsWithCategoryFetch();
+    }
 }

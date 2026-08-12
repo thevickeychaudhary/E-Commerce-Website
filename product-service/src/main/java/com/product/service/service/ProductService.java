@@ -204,23 +204,25 @@ public class ProductService {
     // Category - INNER JOIN
     public List<ProductResponseDto> getProductsByCategoryName(String categoryName) {
 
-        List<Product> products =
-                productRepo.findProductsByCategoryName(categoryName);
+        List<Product> products = productRepo.findProductsByCategoryName(categoryName);
 
-        return products.stream()
-                .map(this::convertToResponse)
-                .toList();
+        return products.stream().map(this::convertToResponse).toList();
     }
 
     //lEFT JOIN
     public List<ProductResponseDto> getAllProductsWithCategory() {
 
-        List<Product> products =
-                productRepo.findAllProductsWithCategory();
+        List<Product> products = productRepo.findAllProductsWithCategory();
 
-        return products.stream()
-                .map(this::convertToResponse)
-                .toList();
+        return products.stream().map(this::convertToResponse).toList();
+    }
+
+    //JOIN FETCH
+    public List<ProductResponseDto> getAllProductsWithCategoryFetch() {
+
+        List<Product> products = productRepo.findAllProductsWithCategoryFetch();
+
+        return products.stream().map(this::convertToResponse).toList();
     }
 
 }

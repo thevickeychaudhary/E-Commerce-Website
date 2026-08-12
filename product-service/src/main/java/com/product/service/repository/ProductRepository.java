@@ -94,13 +94,11 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     // JPQL INNER-JOIN
     @Query("""
             SELECT p
-            FROM Product pŌ
+            FROM Product p
             JOIN p.category c
             WHERE c.categoryName = :categoryName
             """)
-    List<Product> findProductsByCategoryName(
-            @Param("categoryName") String categoryName
-    );
+    List<Product> findProductsByCategoryName(@Param("categoryName") String categoryName);
 
     //LEFT JOIN
     @Query("""
@@ -109,4 +107,12 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             LEFT JOIN p.category c
             """)
     List<Product> findAllProductsWithCategory();
+
+    //JOIN FETCH
+    @Query("""
+            SELECT p
+            FROM Product p
+            JOIN FETCH p.category c
+            """)
+    List<Product> findAllProductsWithCategoryFetch();
 }
