@@ -201,11 +201,22 @@ public class ProductService {
         return productRepo.findPriceGroupsWithMoreThanOneProduct();
     }
 
-    // Category
+    // Category - INNER JOIN
     public List<ProductResponseDto> getProductsByCategoryName(String categoryName) {
 
         List<Product> products =
                 productRepo.findProductsByCategoryName(categoryName);
+
+        return products.stream()
+                .map(this::convertToResponse)
+                .toList();
+    }
+
+    //lEFT JOIN
+    public List<ProductResponseDto> getAllProductsWithCategory() {
+
+        List<Product> products =
+                productRepo.findAllProductsWithCategory();
 
         return products.stream()
                 .map(this::convertToResponse)

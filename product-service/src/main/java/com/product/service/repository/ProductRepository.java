@@ -91,14 +91,22 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Object[]> findPriceGroupsWithMoreThanOneProduct();
 
     // JOINS
-    // JPQL JOIN
+    // JPQL INNER-JOIN
     @Query("""
-        SELECT p
-        FROM Product p
-        JOIN p.category c
-        WHERE c.categoryName = :categoryName
-        """)
+            SELECT p
+            FROM Product pŌ
+            JOIN p.category c
+            WHERE c.categoryName = :categoryName
+            """)
     List<Product> findProductsByCategoryName(
             @Param("categoryName") String categoryName
     );
+
+    //LEFT JOIN
+    @Query("""
+            SELECT p
+            FROM Product p
+            LEFT JOIN p.category c
+            """)
+    List<Product> findAllProductsWithCategory();
 }

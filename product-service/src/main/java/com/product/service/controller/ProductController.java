@@ -21,7 +21,7 @@ public class ProductController {
 
     public ProductController(ProductService prodService, ProductRepository productRepository) {
         this.prodService = prodService;
-        this.productRepository =  productRepository;
+        this.productRepository = productRepository;
     }
 
     // DTO PROJECTION
@@ -132,11 +132,16 @@ public class ProductController {
         return prodService.findPriceGroupsWithMoreThanOneProduct();
     }
 
-    //Category
+    //Category - INNER JOIN
     @GetMapping("/category/{categoryName}")
-    public List<ProductResponseDto> getProductsByCategoryName(
-            @PathVariable String categoryName)  {
+    public List<ProductResponseDto> getProductsByCategoryName(@PathVariable String categoryName) {
 
         return prodService.getProductsByCategoryName(categoryName);
+    }
+
+    //LEFT JOIN
+    @GetMapping("/left-join")
+    public List<ProductResponseDto> getAllProductsWithCategory() {
+        return prodService.getAllProductsWithCategory();
     }
 }
