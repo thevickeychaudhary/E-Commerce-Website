@@ -24,4 +24,6 @@ public class ProductRequestDto {
 	@PositiveOrZero
 	private Integer quantity;
 
+	private Long categoryId;
+
 }
