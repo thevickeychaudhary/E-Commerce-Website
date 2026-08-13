@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -223,6 +224,35 @@ public class ProductService {
         List<Product> products = productRepo.findAllProductsWithCategoryFetch();
 
         return products.stream().map(this::convertToResponse).toList();
+    }
+
+    //SUB-QUERY
+    public List<ProductResponseDto> getProductsAboveAveragePrice() {
+
+        List<Product> products = productRepo.findProductsAboveAveragePrice();
+
+        return products.stream().map(this::convertToResponse).toList();
+    }
+
+    //CASE WHEN
+    public List<Object[]> getProductsWithPriceCategory() {
+
+        return productRepo.findProductsWithPriceCategory();
+    }
+
+    //DISTINCT
+    public List<ProductResponseDto> getDistinctProducts() {
+
+        List<Product> products = productRepo.findDistinctProducts();
+
+        return products.stream().map(this::convertToResponse).toList();
+    }
+
+    //MODIFYING
+    @Transactional
+    public int updateProductPrice(Long id, Double price) {
+
+        return productRepo.updateProductPrice(id, price);
     }
 
 }

@@ -3,6 +3,7 @@ package com.product.service.repository;
 import com.product.service.dto.ProductSummaryDto;
 import com.product.service.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -115,4 +116,47 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             JOIN FETCH p.category c
             """)
     List<Product> findAllProductsWithCategoryFetch();
+
+    //SUB-QUERY
+    @Query("""
+            SELECT p
+            FROM Product p
+            WHERE p.price > (
+                SELECT AVG(p2.price)
+                FROM Product p2
+            )
+            """)
+    List<Product> findProductsAboveAveragePrice();
+
+    //CASE WHEN
+    @Query("""
+            SELECT p.name,
+                   CASE
+                       WHEN p.price > 50000 THEN 'Expensive'
+                       WHEN p.price >= 5000 THEN 'Normal'
+                       ELSE 'Cheap'
+                   END
+            FROM Product p
+            """)
+    List<Object[]> findProductsWithPriceCategory();
+
+    //DISTINCT
+    @Query("""
+            SELECT DISTINCT p
+            FROM Product p
+            JOIN p.category c
+            """)
+    List<Product> findDistinctProducts();
+
+    //MODIFIY QUERY
+    @Modifying
+    @Query("""
+            UPDATE Product p
+            SET p.price = :price
+            WHERE p.id = :id
+            """)
+    int updateProductPrice(
+            @Param("id") Long id,
+            @Param("price") Double price
+    );
 }

@@ -151,4 +151,38 @@ public class ProductController {
 
         return prodService.getAllProductsWithCategoryFetch();
     }
+
+    //SUB-QUERY
+    @GetMapping("/above-average")
+    public List<ProductResponseDto> getProductsAboveAveragePrice() {
+
+        return prodService.getProductsAboveAveragePrice();
+    }
+
+    //CASE WHEN
+    @GetMapping("/price-category")
+    public List<Object[]> getProductsWithPriceCategory() {
+
+        return prodService.getProductsWithPriceCategory();
+    }
+
+    //DISTINCT
+    @GetMapping("/distinct")
+    public List<ProductResponseDto> getDistinctProducts() {
+
+        return prodService.getDistinctProducts();
+    }
+
+    //MODIFYING
+    @PutMapping("/{id}/price")
+    public String updateProductPrice(@PathVariable Long id, @RequestParam Double price) {
+
+        int updated = prodService.updateProductPrice(id, price);
+
+        if (updated > 0) {
+            return "Product price updated successfully";
+        }
+
+        return "Product not found";
+    }
 }
